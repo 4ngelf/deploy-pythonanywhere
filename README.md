@@ -1,6 +1,6 @@
 # Deploy Pythonanywhere
 
-Deploy to pythonanywhere using any webapp framework
+Deploy to pythonanywhere using any webapp framework.
 
 ## License
 
