@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "deploy-pythonanywhere"
 version = "0.1.0"
-description = "Deploy to anywhere using any webapp framework"
+description = "Deploy to pythonanywhere using any webapp framework"
 authors = ["Angel Fuenmayor <32184965+4ngelf@users.noreply.github.com>"]
 license = "MIT"
 readme = "README.md"

@@ -1,3 +1,7 @@
 # Deploy Pythonanywhere
 
-Python package to easily deploy to pythonanywhere with an easy api.
+Deploy to pythonanywhere using any webapp framework
+
+## License
+
+[MIT License](./LICENSE)
