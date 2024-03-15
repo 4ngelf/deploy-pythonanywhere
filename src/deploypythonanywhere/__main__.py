@@ -32,13 +32,13 @@ def parse_args():
 
 def main():
     args = parse_args()
-    key = key if args.key != "-" else sys.stdin.readline()
+    key = args.key if args.key != "-" else sys.stdin.readline()
 
     try:
         result = json.loads('{"version":"0.1.0","ok":true}')
         # result = deploy(key)
     except HTTPException as e:
-        raise e("Couldn't connect to pythonanywhere server")
+        print("Couldn't connect to pythonanywhere server")
 
     # TODO: handle invalid json
     
