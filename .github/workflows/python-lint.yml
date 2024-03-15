@@ -9,20 +9,25 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    environment: default
+    environment: ${{ github.ref_name }}
     strategy:
       matrix:
-        python_version: [3.9, "3.10", 3.11, 3.12]
+        python_version: [3.9, 3.10, 3.11, 3.12]
+    env:
+      POETRY_VERSION: ${{ vars.POETRY_VERSION }}
     
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup poetry ${{ env.POETRY_VERSION }}
+    - name: fail fast on wrong configuration
       env:
-        POETRY_VERSION: 1.8.2
+        ENVIRONMENT: ${{ github.ref_name }}
       run: |
-        test "$POETRY_VERSION" \
-          && POETRY="poetry" || POETRY="poetry==$POETRY_VERSION"
-        pipx install $POETRY
+        if [[ -z "$POETRY_VERSION" ]]; then
+          echo "POETRY_VERSION is not defined on $ENVIRONMENT" 1>&2
+          exit 1
+        fi
+    - name: Setup poetry ${{ env.POETRY_VERSION }}
+      run: pipx install poetry==$POETRY_VERSION
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python_version }}
       uses: actions/setup-python@v5
       with:
