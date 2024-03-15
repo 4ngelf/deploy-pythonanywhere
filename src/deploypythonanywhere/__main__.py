@@ -26,7 +26,7 @@ def parse_args():
         "pre_command",
         action="store",
         default='git pull origin',
-        dest="command"
+        dest="command",
         help="command to execute before restarting webapp. default='git pull origin'" )
     return parser.parse_args()
 
@@ -38,7 +38,7 @@ def main():
         result = json.loads('{"version":"0.1.0","ok":true}')
         # result = deploy(key)
     except HTTPException as e:
-        raise e, "Couldn't connect to pythonanywhere server"
+        raise e("Couldn't connect to pythonanywhere server")
 
     # TODO: handle invalid json
     
