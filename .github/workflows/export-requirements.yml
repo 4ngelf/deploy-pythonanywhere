@@ -12,23 +12,20 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    environment: ${{ github.ref_name }}
-    env:
-      POETRY_VERSION: ${{ vars.POETRY_VERSION }}
-      
+    strategy:
+      matrix:
+        poetry-version: ['1.8']
+        poetry_plugin_export_version: ['1.7']
+
     steps:
-    - name: fail fast on wrong configuration
+    - name: Setup poetry ${{ matrix.poetry_version }}
       env:
-        ENVIRONMENT: ${{ github.ref_name }}
-      run: |
-        if [[ -z "$POETRY_VERSION" ]]; then
-          echo "POETRY_VERSION is not defined on $ENVIRONMENT" 1>&2
-          exit 1
-        fi
-    - name: Setup poetry ${{ env.POETRY_VERSION }}
+        POETRY_VERSION: ${{ matrix.poetry_version }}
       run: pipx install poetry==$POETRY_VERSION
     - name: Inject poetry-plugin-export
-      run: pipx inject poetry poetry-plugin-export
+      env:
+        PLUGIN_VERSION: ${{ matrix.poetry_plugin_export_version }}
+      run: pipx inject poetry poetry-plugin-export==$PLUGIN_VERSION
     - uses: actions/checkout@v4
     - name: export requirements.txt
       run: poetry export -f requirements.txt --output requirements.txt

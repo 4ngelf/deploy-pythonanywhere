@@ -9,37 +9,28 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name }}
     strategy:
       matrix:
         python_version: ['3.9', '3.10', '3.11', '3.12']
-    env:
-      POETRY_VERSION: ${{ vars.POETRY_VERSION }}
+        poetry_version: ['1.8']
     
     steps:
-    - name: fail fast on wrong configuration
+    - name: Setup poetry ${{ matrix.poetry_version }}
       env:
-        ENVIRONMENT: ${{ github.ref_name }}
-      run: |
-        if [[ -z "$POETRY_VERSION" ]]; then
-          echo "POETRY_VERSION is not defined on $ENVIRONMENT" 1>&2
-          exit 1
-        fi
-    - name: Setup poetry ${{ env.POETRY_VERSION }}
+        POETRY_VERSION: ${{ matrix.poetry_version }}
       run: pipx install poetry==$POETRY_VERSION
-    - uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python_version }}
+    - name: Setup Python ${{ matrix.python_version }}
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python_version }}
         cache: poetry
+    - uses: actions/checkout@v4
     - name: Install dependencies
       run: poetry install
-    - name: run ruff linter
+    - name: ruff linter
       env:
-        RUFF_OUTPUT_FORMAT: github
         RUFF_SELECT: E,F,B,W605
         RUFF_IGNORE: F401,F841,E501
-      run: poetry run ruff check --select "$RUFF_SELECT" --ignore "$RUFF_IGNORE"
-    - name: run pytest
+      run: poetry run ruff check --output-format github --select "$RUFF_SELECT" --ignore "$RUFF_IGNORE"
+    - name: pytest
       run: poetry run pytest
