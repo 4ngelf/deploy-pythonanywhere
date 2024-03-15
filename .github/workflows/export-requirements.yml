@@ -1,0 +1,35 @@
+name: Export requirements.txt
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['poetry.lock']
+
+jobs:
+  export:
+    name: Export requirements.txt
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup poetry ${{ vars.POETRY_VERSION }}
+      run: |
+        test "${{ vars.POETRY_VERSION }}" \
+          && POETRY="poetry" || POETRY="poetry==$POETRY_VERSION"
+        pipx install $POETRY
+    - name: Inject poetry-plugin-export
+      run: pipx inject poetry poetry-plugin-export
+    - name: export requirements.txt
+      id: export_step
+      run: |
+        echo "before=${{ hashFiles(requirements.txt) }}" >> $GITHUB_OUTPUT
+        poetry export -f requirements.txt --output requirements.txt
+    - name: push changes
+      if: ${{ hashFiles(requirements.txt) != steps.export_step.outputs.before }}
+      uses: stefanzweifel/git-auto-commit-action@v5.0.0
+      with:
+        commit_message: "ci: export requirements.txt"
+        file_pattern: requirements.txt
