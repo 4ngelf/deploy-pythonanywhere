@@ -6,9 +6,6 @@ on:
     branches: [main]
     paths: ['src/**', 'test/**', 'pyproject.toml', 'poetry.lock']
 
-env:
-  POETRY_VERSION: ${{ vars.POETRY_VERSION }}
-
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -18,8 +15,11 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
-    - name: Setup poetry ${{ env.POETRY_VERSION }}
-      run: pipx install poetry==$POETRY_VERSION
+    - name: Setup poetry ${{ vars.POETRY_VERSION }}
+      run: |
+        test "${{ vars.POETRY_VERSION }}" \
+          && POETRY="poetry" || POETRY="poetry==$POETRY_VERSION"
+        pipx install $POETRY
     - name: Set up Python ${{ matrix.python_version }}
       uses: actions/setup-python@v5
       with:
