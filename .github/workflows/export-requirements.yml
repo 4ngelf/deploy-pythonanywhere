@@ -7,19 +7,26 @@ on:
     paths: ['poetry.lock']
 
 jobs:
-  export:
+  export-requirements:
     name: Export requirements.txt
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
+    environment: ${{ github.ref_name }}
+    env:
+      POETRY_VERSION: ${{ vars.POETRY_VERSION }}
+      
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup poetry ${{ vars.POETRY_VERSION }}
+    - name: fail fast on wrong configuration
+      env:
+        ENVIRONMENT: ${{ github.ref_name }}
       run: |
-        test "${{ vars.POETRY_VERSION }}" \
-          && POETRY="poetry" || POETRY="poetry==$POETRY_VERSION"
-        pipx install $POETRY
+        if [[ -z "$POETRY_VERSION" ]]; then
+          echo "POETRY_VERSION is not defined on $ENVIRONMENT" 1>&2
+          exit 1
+        fi
+    - name: Setup poetry ${{ env.POETRY_VERSION }}
+      run: pipx install poetry==$POETRY_VERSION
     - name: Inject poetry-plugin-export
       run: pipx inject poetry poetry-plugin-export
     - name: export requirements.txt
