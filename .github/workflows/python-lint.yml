@@ -12,13 +12,13 @@ jobs:
     environment: default
     strategy:
       matrix:
-        python_version: [3.9, 3.10, 3.11, 3.12]
+        python_version: [3.9, "3.10", 3.11, 3.12]
     
     steps:
     - uses: actions/checkout@v4
-    - name: Setup poetry ${{ vars.POETRY_VERSION }}
+    - name: Setup poetry ${{ env.POETRY_VERSION }}
       env:
-        POETRY_VERSION: ${{ vars.POETRY_VERSION }}
+        POETRY_VERSION: 1.8.2
       run: |
         test "$POETRY_VERSION" \
           && POETRY="poetry" || POETRY="poetry==$POETRY_VERSION"
