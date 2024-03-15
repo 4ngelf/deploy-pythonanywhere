@@ -19,25 +19,16 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
-    
+    - name: Setup poetry
+      run: pipx install poetry==$POETRY_VERSION
     - name: Set up Python ${{ matrix.python_version }}
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python_version }}
-        
-    - name: Set up poetry
-      run: |
-        python3 -m venv "$POETRY_HOME"
-        $POETRY_HOME/bin/pip install poetry==$POETRY_VERSION
-        $POETRY_HOME/bin/poetry config virtualenvs.in-project true
-        echo "${POETRY_HOME}/bin" >> "$GITHUB_PATH"
-        $POETRY_HOME/bin/poetry --version
-
+        cache: poetry
     - name: Install dependencies
       run: poetry install
-
     - name: run ruff linter
       run: poetry run ruff check
-
     - name: run pytest
       run: poetry run pytest
