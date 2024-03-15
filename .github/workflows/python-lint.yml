@@ -9,6 +9,7 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    environment: default
     strategy:
       matrix:
         python_version: [3.9, 3.10, 3.11, 3.12]
@@ -16,8 +17,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Setup poetry ${{ vars.POETRY_VERSION }}
+      env:
+        POETRY_VERSION: ${{ vars.POETRY_VERSION }}
       run: |
-        test "${{ vars.POETRY_VERSION }}" \
+        test "$POETRY_VERSION" \
           && POETRY="poetry" || POETRY="poetry==$POETRY_VERSION"
         pipx install $POETRY
     - name: Set up Python ${{ matrix.python_version }}
