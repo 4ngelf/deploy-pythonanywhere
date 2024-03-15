@@ -8,6 +8,7 @@ on:
 
 jobs:
   lint:
+    name: Python lint and test
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -15,6 +16,7 @@ jobs:
         poetry_version: ['1.8']
     
     steps:
+    - uses: actions/checkout@v4
     - name: Setup poetry ${{ matrix.poetry_version }}
       env:
         POETRY_VERSION: ${{ matrix.poetry_version }}
@@ -24,7 +26,6 @@ jobs:
       with:
         python-version: ${{ matrix.python_version }}
         cache: poetry
-    - uses: actions/checkout@v4
     - name: Install dependencies
       run: poetry install
     - name: ruff linter
