@@ -36,6 +36,10 @@ jobs:
     - name: Install dependencies
       run: poetry install
     - name: run ruff linter
-      run: poetry run ruff check
+      env:
+        RUFF_OUTPUT_FORMAT: github
+        RUFF_SELECT: E,F,B,W605
+        RUFF_IGNORE: F401,F841,E501
+      run: poetry run ruff check --select "$RUFF_SELECT" --ignore "$RUFF_IGNORE"
     - name: run pytest
       run: poetry run pytest
