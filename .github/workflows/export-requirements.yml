@@ -12,20 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    strategy:
-      matrix:
-        poetry_version: ['1.8.2']
-        poetry_plugin_export_version: ['1.7']
+    env:
+      POETRY_VERSION: ${{ vars.POETRY_VERSION }}
+      PLUGIN_VERSION: ${{ vars.POETRY_PLUGIN_EXPORT_VERSION }}
 
     steps:
     - uses: actions/checkout@v4
-    - name: Setup poetry ${{ matrix.poetry_version }}
-      env:
-        POETRY_VERSION: ${{ matrix.poetry_version }}
+    - name: Setup poetry ${{ env.POETRY_VERSION }}
       run: pipx install poetry==$POETRY_VERSION
-    - name: Inject poetry-plugin-export ${{ matrix.poetry_plugin_export_version }}
-      env:
-        PLUGIN_VERSION: ${{ matrix.poetry_plugin_export_version }}
+    - name: Inject poetry-plugin-export ${{ env.PLUGIN_VERSION }}
       run: pipx inject poetry poetry-plugin-export==$PLUGIN_VERSION
     - name: export requirements.txt
       run: poetry export -f requirements.txt --output requirements.txt
