@@ -14,7 +14,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        poetry-version: ['1.8.2']
+        poetry_version: ['1.8.2']
         poetry_plugin_export_version: ['1.7']
 
     steps:
