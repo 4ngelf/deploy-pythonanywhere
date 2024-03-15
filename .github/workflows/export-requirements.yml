@@ -31,12 +31,8 @@ jobs:
       run: pipx inject poetry poetry-plugin-export
     - uses: actions/checkout@v4
     - name: export requirements.txt
-      id: export_step
-      run: |
-        echo "before=${{ hashFiles('requirements.txt') }}" >> $GITHUB_OUTPUT
-        poetry export -f requirements.txt --output requirements.txt
+      run: poetry export -f requirements.txt --output requirements.txt
     - name: push changes
-      if: ${{ hashFiles('requirements.txt') != steps.export_step.outputs.before }}
       uses: stefanzweifel/git-auto-commit-action@v5.0.0
       with:
         commit_message: "export requirements.txt"
