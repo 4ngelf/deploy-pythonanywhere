@@ -7,8 +7,7 @@ on:
     paths: ['src/**', 'test/**', 'pyproject.toml', 'poetry.lock']
 
 env:
-  POETRY_VERSION: 1.8.2
-  POETRY_HOME: /opt/poetry
+  POETRY_VERSION: ${{ vars.POETRY_VERSION }}
 
 jobs:
   lint:
@@ -19,7 +18,7 @@ jobs:
     
     steps:
     - uses: actions/checkout@v4
-    - name: Setup poetry
+    - name: Setup poetry ${{ env.POETRY_VERSION }}
       run: pipx install poetry==$POETRY_VERSION
     - name: Set up Python ${{ matrix.python_version }}
       uses: actions/setup-python@v5
